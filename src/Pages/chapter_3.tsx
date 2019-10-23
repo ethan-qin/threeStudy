@@ -41,8 +41,6 @@ export default class Chapter3 extends React.Component<IChapter1Props, IChapter1S
       loader.load('./gltf/jack/scene.gltf', (gltf) => {
         scene.add(gltf.scene);
       }, (loading) => {
-        console.log(loading);
-
         console.log((loading.loaded / loading.total * 100) + '% loaded');
       }, (error) => {
         alert("模型加载出错")
