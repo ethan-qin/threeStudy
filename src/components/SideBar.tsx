@@ -21,19 +21,19 @@ export default class SideBar extends React.Component<ISideBarProps, ISideBarStat
         <Menu.Item key="/chapter_1">
           <NavLink to="/chapter_1">
             <Icon type="user" />
-            <span>导入外部模型</span>
+            <span>内置模型</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="/chapter_2">
           <NavLink to="/chapter_2">
             <Icon type="video-camera" />
-            <span>导入外部模型2</span>
+            <span>贴图自定义</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="/chapter_3">
           <NavLink to="/chapter_3">
             <Icon type="upload" />
-            <span>导入外部模型3</span>
+            <span>导入外部模型</span>
           </NavLink>
         </Menu.Item>
       </Menu>
