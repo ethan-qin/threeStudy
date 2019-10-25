@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, AxesHelper, ImageLoader, ImageUtils, AmbientLight, Color, DirectionalLight, Texture, Side, DoubleSide, Vector3, MeshMatcapMaterial, BackSide } from 'three';
+import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, AxesHelper, ImageLoader, ImageUtils, AmbientLight, Color, DirectionalLight, Texture, Side, DoubleSide, Vector3, MeshMatcapMaterial, BackSide, MeshBasicMaterial } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export interface IChapter1Props {
@@ -23,28 +23,37 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
       let scene = new Scene();
       let renderer = new WebGLRenderer();
       renderer.setSize(width, height);
-      let camera = new PerspectiveCamera(45, width / height, 0.1, 1000);
-      camera.position.set(250, 200, 250);
+      let camera = new PerspectiveCamera(45, width / height, 0.1, 1600);
+      camera.position.set(0, 250, 200);
       camera.lookAt(0, 0, 0);
       let controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
-      let axesHelper = new AxesHelper(2000);
-      // let ambientLight = new AmbientLight(0xFFFFFF);
+      controls.maxDistance = 800;
+      // let axesHelper = new AxesHelper(900);
+      // let ambientLight = new AmbientLight(0x888888);
       // scene.add(ambientLight)
-      let directionLight = new DirectionalLight(0xffffff);
-      directionLight.position.set(100, 300, -100)
+      let directionLight = new DirectionalLight(0xffffff, 1);
+      directionLight.position.set(300, 200, -100)
       scene.add(directionLight);
-      scene.add(axesHelper)
-      let earthGeomery = new SphereGeometry(100, 100, 100);
+      // scene.add(axesHelper)
+      let earthGeomery = new SphereGeometry(80, 320, 320);
       let material = new MeshPhongMaterial();
       material.map = ImageUtils.loadTexture('./images/earthmap1k.jpg')
       material.bumpMap = ImageUtils.loadTexture('./images/earthbump1k.jpg');
       material.bumpScale = 1;
-      material.specularMap = ImageUtils.loadTexture('./image/earthspec1k.jpg');
-      material.specular = new Color('grey')
+      material.specularMap = ImageUtils.loadTexture('./images/earthspec1k.jpg');
+      material.specular = new Color('#666')
       let earthMesh = new Mesh(earthGeomery, material);
       // earthMesh.position.set(0, 1, 0)  
-      let cloudGeomary = new SphereGeometry(101, 100, 100);
+      let cloudGeomary = new SphereGeometry(80.2, 320, 320);
+
+      var geometry1  = new SphereGeometry(800, 32, 32)
+      var material1  = new MeshBasicMaterial()
+      material1.map   = ImageUtils.loadTexture('./images/galaxy_starfield.png')
+      material1.side  = BackSide
+      var mesh1  = new Mesh(geometry1, material1)
+      scene.add(mesh1)
+
       this.makeCanvasCloud().then(f => {
         let cloudMaterial = new MeshPhongMaterial({
           map: new Texture(f),

@@ -24,19 +24,19 @@ export default class Chapter1 extends React.Component<IChapter1Props, IChapter1S
       let renderer = new WebGLRenderer();
       renderer.setSize(width, height);
       let camera = new PerspectiveCamera(70, width / height, 0.1, 1000);
-      camera.position.set(8, 15, 8);
-      camera.lookAt(0, 10, 0);
-      let cubeGeometry = new BoxGeometry(2, 2, 2);
+      camera.position.set(20, 60, 20);
+      camera.lookAt(0, 20, 0);
+      let cubeGeometry = new BoxGeometry(10, 10, 10);
       let material = new MeshBasicMaterial({ color: 0xff0000, wireframe: true });
       let cube = new Mesh(cubeGeometry, material);
-      cube.position.set(0, 10, 0);
+      cube.position.set(0, 35, 0);
       scene.add(cube);
 
       let controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
-      let sphereGeometry = new SphereGeometry(2, 20, 20);
+      let sphereGeometry = new SphereGeometry(7, 20, 20);
       let sphere = new Mesh(sphereGeometry, material);
-      sphere.position.set(0, 5, 0);
+      sphere.position.set(0, 15, 0);
       scene.add(sphere)
       var axesHelper = new AxesHelper(100);
       scene.add(axesHelper);
