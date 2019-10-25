@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Scene, WebGLRenderer, PerspectiveCamera, BoxGeometry, MeshBasicMaterial, Mesh, Vector3, ArrowHelper, AxesHelper, DirectionalLight, LineBasicMaterial, SphereGeometry } from 'three';
+import { Scene, WebGLRenderer, PerspectiveCamera, BoxGeometry, MeshBasicMaterial, Mesh, AxesHelper, SphereGeometry } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export interface IChapter1Props {
@@ -41,8 +41,8 @@ export default class Chapter1 extends React.Component<IChapter1Props, IChapter1S
       var axesHelper = new AxesHelper(100);
       scene.add(axesHelper);
       this.containerRef.current.appendChild(renderer.domElement);
-      let render = () => {
-        requestAnimationFrame(render)
+      let renderWebGl = () => {
+        requestAnimationFrame(renderWebGl)
         controls.update()
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
@@ -50,7 +50,7 @@ export default class Chapter1 extends React.Component<IChapter1Props, IChapter1S
         sphere.rotation.y += 0.01;
         renderer.render(scene, camera);
       }
-      render()
+      renderWebGl()
     }
   }
   public render() {

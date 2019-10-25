@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, AxesHelper, ImageLoader, ImageUtils, AmbientLight, Color, DirectionalLight, Texture, Side, DoubleSide, Vector3, MeshMatcapMaterial, BackSide, MeshBasicMaterial } from 'three';
+import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, Color, DirectionalLight, Texture, DoubleSide, BackSide, MeshBasicMaterial, TextureLoader } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-
 export interface IChapter1Props {
 }
 
@@ -21,58 +20,24 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
       let width = this.containerRef.current.clientWidth;
       let height = this.containerRef.current.clientHeight;
       let scene = new Scene();
-      let renderer = new WebGLRenderer();
+      let renderer = new WebGLRenderer({ powerPreference: 'high-performance' });
       renderer.setSize(width, height);
-      let camera = new PerspectiveCamera(45, width / height, 0.1, 1600);
-      camera.position.set(0, 250, 200);
-      camera.lookAt(0, 0, 0);
+      let camera = this.createCamera(width, height);
       let controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
       controls.maxDistance = 800;
-      // let axesHelper = new AxesHelper(900);
-      // let ambientLight = new AmbientLight(0x888888);
-      // scene.add(ambientLight)
-      let directionLight = new DirectionalLight(0xffffff, 1);
-      directionLight.position.set(300, 200, -100)
-      scene.add(directionLight);
-      // scene.add(axesHelper)
-      let earthGeomery = new SphereGeometry(80, 320, 320);
-      let material = new MeshPhongMaterial();
-      material.map = ImageUtils.loadTexture('./images/earthmap1k.jpg')
-      material.bumpMap = ImageUtils.loadTexture('./images/earthbump1k.jpg');
-      material.bumpScale = 1;
-      material.specularMap = ImageUtils.loadTexture('./images/earthspec1k.jpg');
-      material.specular = new Color('#666')
-      let earthMesh = new Mesh(earthGeomery, material);
-      // earthMesh.position.set(0, 1, 0)  
-      let cloudGeomary = new SphereGeometry(80.2, 320, 320);
-
-      var geometry1  = new SphereGeometry(800, 32, 32)
-      var material1  = new MeshBasicMaterial()
-      material1.map   = ImageUtils.loadTexture('./images/galaxy_starfield.png')
-      material1.side  = BackSide
-      var mesh1  = new Mesh(geometry1, material1)
-      scene.add(mesh1)
-
+      let earth = this.createEarth()
+      scene.add(earth);
+      scene.add(this.createDirectLight());
+      scene.add(this.createBackground())
       this.makeCanvasCloud().then(f => {
-        let cloudMaterial = new MeshPhongMaterial({
-          map: new Texture(f),
-          side: DoubleSide,
-          opacity: 0.8,
-          transparent: true
-        })
-        let cloudMesh = new Mesh(cloudGeomary, cloudMaterial);
-        // cloudMesh.position.set(0, 1, 0)
-        if (cloudMaterial.map) {
-          cloudMaterial.map.needsUpdate = true;
-        }
-        scene.add(cloudMesh)
+        let cloud = this.createEarthCloud(f);
+        scene.add(cloud)
         if (this.containerRef.current) {
-          scene.add(earthMesh);
           this.containerRef.current.appendChild(renderer.domElement);
           let animate = () => {
-            earthMesh.rotation.y += 0.001;
-            cloudMesh.rotation.y += 0.002;
+            earth.rotation.y += 0.001;
+            cloud.rotation.y += 0.002;
             requestAnimationFrame(animate);
             renderer.render(scene, camera);
           }
@@ -134,6 +99,59 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
       }, false);
       imageMap.src = "./images/earthcloudmap.jpg"
     })
+  }
+
+  // 创建camera
+  createCamera(width: number, height: number) {
+    let camera = new PerspectiveCamera(45, width / height, 0.1, 1600);
+    camera.position.set(-80, 200, 500);
+    camera.lookAt(0, 0, 0);
+    return camera
+  }
+
+  // 创建地球
+  createEarth() {
+    let geomary = new SphereGeometry(80, 80, 80);
+    let material = new MeshPhongMaterial({
+      map: new TextureLoader().load('./images/earthmap1k.jpg'),
+      bumpMap: new TextureLoader().load('./images/earthbump1k.jpg'),
+      bumpScale: 1,
+      specularMap: new TextureLoader().load('./images/earthspec1k.jpg'),
+      specular: new Color('#666'),
+      shininess: 5
+    })
+    return new Mesh(geomary, material);
+  }
+  // 创建地球云层
+
+  createEarthCloud(cloud: HTMLCanvasElement) {
+    let geomary = new SphereGeometry(80.2, 90, 90);
+    let cloudTexture = new Texture(cloud);
+    cloudTexture.needsUpdate = true;
+    let material = new MeshPhongMaterial({
+      map: cloudTexture,
+      side: DoubleSide,
+      opacity: 0.8,
+      transparent: true
+    })
+    let mesh = new Mesh(geomary, material);
+    return mesh;
+  }
+  // 创建背景图
+  createBackground() {
+    let geomery = new SphereGeometry(800, 32, 32);
+    let material = new MeshBasicMaterial({
+      map: new TextureLoader().load('./images/galaxy_starfield.png'),
+      side: BackSide
+    })
+    return new Mesh(geomery, material)
+  }
+
+  // 创建点光源
+  createDirectLight() {
+    let light = new DirectionalLight(0xffffff, 1.5);
+    light.position.set(300, 200, 500);
+    return light;
   }
   public render() {
     return (

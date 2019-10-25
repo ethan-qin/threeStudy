@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, PCFSoftShadowMap, DirectionalLight } from 'three';
+import { Scene, PerspectiveCamera, WebGLRenderer } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
