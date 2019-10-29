@@ -36,6 +36,12 @@ export default class SideBar extends React.Component<ISideBarProps, ISideBarStat
             <span>导入外部模型</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="/chapter_4">
+          <NavLink to="/chapter_4">
+            <Icon type="upload" />
+            <span>骨骼动画</span>
+          </NavLink>
+        </Menu.Item>
       </Menu>
     );
   }

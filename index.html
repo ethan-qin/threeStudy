@@ -1,0 +1,67 @@
+<!--
+ * @Author: ethan.qin
+ * @Date: 2019-10-28 09:43:08
+ * @LastEditTime: 2019-10-28 15:37:21
+ * @LastEditors: ethan.qin
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  /**
+   * @param {string} s
+   * @return {boolean}
+   */
+  var isValid = function (s) {
+    if (s.trim().length === 0) {
+      return true;
+    } else {
+      let left = new Map();
+      let right = new Map();
+      left.set('(', ')');
+      left.set('{', '}');
+      left.set('[', ']');
+      right.set(')', '(');
+      right.set('}', '{');
+      right.set(']', '[');
+      let brackets = s.split('').filter(item => !!left.get(item) || !!right.get(item));
+      if (brackets.length % 2 !== 0) {
+        return false;
+      } else {
+        let tempInn = [];
+        for (let index = 0; index < brackets.length; index++) {
+          const element = brackets[index];
+          if (left.get(element)) {
+            tempInn.push(element)
+          } else {
+            if (left.get(tempInn[tempInn.length - 1]) !== element) {
+              return false;
+            } else {
+              tempInn.length = tempInn.length - 1;
+            }
+          }
+        }
+        if(tempInn.length>0){
+          return false;
+        }else{
+          return true;
+        }
+      }
+    }
+
+  };
+  console.log(isValid("{}[] ([])]]"));
+
+</script>
+
+</html>
