@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, Color, DirectionalLight, Texture, DoubleSide, BackSide, MeshBasicMaterial, TextureLoader, MeshLambertMaterial, Vector3 } from 'three';
+import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, Color, DirectionalLight, Texture, DoubleSide, BackSide, MeshBasicMaterial, TextureLoader, MeshLambertMaterial, Vector3, PointLight } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 export interface IChapter1Props {
 }
@@ -37,15 +37,6 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
       scene.add(earthSmall);
       scene.add(this.createDirectLight());
       scene.add(this.createBackground())
-      const Sun = new Mesh(new SphereGeometry(10.2, 16, 16),
-        new MeshLambertMaterial({
-          color: 0xffff00,
-          emissive: 0xdd4422,
-          opacity: 0
-        })
-      );
-      Sun.name = 'Sun';
-      scene.add(Sun);
       this.makeCanvasCloud().then(f => {
         let cloud = this.createEarthCloud(f);
         scene.add(cloud)
@@ -142,7 +133,7 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
       map: new TextureLoader().load('./images/earth1.jpg'),
       bumpMap: new TextureLoader().load('./images/bathymetry.jpg'),
       bumpScale: 1.5,
-      shininess: 5
+      shininess: 5,
     })
     let Earth = new Mesh(geomary, material);
     Earth.position.set(0, 0, 500)
@@ -176,8 +167,13 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
 
   // 创建点光源
   createDirectLight() {
-    let light = new DirectionalLight(0xffffff, 1.5);
-    light.position.set(10, 0, 0);
+    let light = new PointLight(0xffffff, 1);
+    light.add(new Mesh(new SphereGeometry(100.2, 16, 16),
+      new MeshLambertMaterial({
+        color: 0xffff00,
+        emissive: 0xdd4422,
+        opacity: 0
+      })))
     return light;
   }
   public render() {

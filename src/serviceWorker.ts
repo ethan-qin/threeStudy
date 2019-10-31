@@ -1,3 +1,9 @@
+/*
+ * @Author: ethan.qin
+ * @Date: 2019-10-21 16:40:08
+ * @LastEditTime: 2019-10-31 10:46:28
+ * @LastEditors: ethan.qin
+ */
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
