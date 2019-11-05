@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, Color, DirectionalLight, Texture, DoubleSide, BackSide, MeshBasicMaterial, TextureLoader, MeshLambertMaterial, Vector3, PointLight } from 'three';
+import { Scene, WebGLRenderer, PerspectiveCamera, SphereGeometry, MeshPhongMaterial, Mesh, Color, DirectionalLight, Texture, DoubleSide, BackSide, MeshBasicMaterial, TextureLoader, MeshLambertMaterial, Vector3, PointLight, Geometry, CircleGeometry, LineBasicMaterial, LineLoop, AxesHelper } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 export interface IChapter1Props {
 }
@@ -17,23 +17,26 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
   private containerRef = React.createRef<HTMLDivElement>()
   componentDidMount() {
     if (this.containerRef.current) {
-      const camOffset = 100;
-      let direction = new Vector3();
       let width = this.containerRef.current.clientWidth;
       let height = this.containerRef.current.clientHeight;
       let scene = new Scene();
-      let renderer = new WebGLRenderer({ powerPreference: 'high-performance' });
+      let renderer = new WebGLRenderer({ powerPreference: 'high-performance', antialias: true });
       renderer.setSize(width, height);
       let camera = this.createCamera(width, height);
       let controls = new OrbitControls(camera, renderer.domElement);
-      controls.autoRotate = true;
+      controls.autoRotate = false;
       controls.maxDistance = 1500;
       // controls.enablePan = false;
       // controls.enableZoom = false;
       let earth = this.createEarth()
+      let moon = this.createMoon()
       let earthSmall = this.createEarth()
       earthSmall.position.set(0, 0, 450);
+      let axerHelper = new AxesHelper(10000);
+      scene.add(axerHelper)
       scene.add(earth);
+      scene.add(moon);
+      scene.add(this.createEarthAnnuls())
       scene.add(earthSmall);
       scene.add(this.createDirectLight());
       scene.add(this.createBackground())
@@ -45,16 +48,11 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
           let angle = 0;
           let animate = () => {
             requestAnimationFrame(animate);
-            // direction.subVectors(camera.position, controls.target);
-            // direction.normalize().multiplyScalar(camOffset);
-            // camera.position.copy(direction.add(controls.target));
-            // earth.getWorldPosition(controls.target)
             controls.target = new Vector3().copy(earth.position)
             angle += 0.01;
             earth.rotation.y += 0.001;
             cloud.rotation.y += 0.002;
             earthSmall.position.set(450 * Math.sin(angle), 0, 450 * Math.cos(angle));
-            // cloud.position.set(500 * Math.sin(angle), 0, 500 * Math.cos(angle));
             controls.update();
             renderer.render(scene, camera);
           }
@@ -125,7 +123,24 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
     // camera.lookAt(0, 0, 0);
     return camera
   }
+  createEarthAnnuls() {
+    let segmentCount = 50000;
+    let radius = 500;
+    let geometry = new Geometry();
+    let material = new LineBasicMaterial({ color: 0xffff00 });
 
+    for (var i = 0; i <= segmentCount; i++) {
+      var theta = (i / segmentCount) * Math.PI * 2;
+      geometry.vertices.push(
+        new Vector3(
+          Math.cos(theta) * radius,
+          Math.sin(theta) * radius,
+          0));
+    }
+    let cube = new LineLoop(geometry, material);
+    cube.rotation.x = Math.PI / 2;
+    return cube;
+  }
   // 创建地球
   createEarth() {
     let geomary = new SphereGeometry(8, 32, 32);
@@ -138,6 +153,19 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
     let Earth = new Mesh(geomary, material);
     Earth.position.set(0, 0, 500)
     return Earth;
+  }
+  // 创建月球
+  createMoon() {
+    let geomary = new SphereGeometry(2, 32, 32);
+    let material = new MeshPhongMaterial({
+      map: new TextureLoader().load('./images/moon.jpg'),
+      bumpMap: new TextureLoader().load('./images/moon-bump.jpg'),
+      bumpScale: 0.05,
+      shininess: 5,
+    })
+    let Moon = new Mesh(geomary, material);
+    Moon.position.set(0, 0, 450)
+    return Moon;
   }
   // 创建地球云层
 
@@ -168,7 +196,7 @@ export default class Chapter2 extends React.Component<IChapter1Props, IChapter1S
   // 创建点光源
   createDirectLight() {
     let light = new PointLight(0xffffff, 1);
-    light.add(new Mesh(new SphereGeometry(100.2, 16, 16),
+    light.add(new Mesh(new SphereGeometry(100.2, 36, 36),
       new MeshLambertMaterial({
         color: 0xffff00,
         emissive: 0xdd4422,

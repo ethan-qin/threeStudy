@@ -25,7 +25,9 @@ export default class Chapter4 extends React.Component<IChapter4Props, IChapter4S
       let camera = new PerspectiveCamera(45, width / height, 0.1, 10000);
       camera.position.set(0, 500, 500);
       let scene = new Scene();
-      let renderer = new WebGLRenderer();
+      let renderer = new WebGLRenderer({
+        antialias: true
+      });
       renderer.shadowMapEnabled = true;
       renderer.setSize(width, height);
       let axerHelp = new AxesHelper(1000);

@@ -20,6 +20,7 @@ export default class RouterMap extends React.Component<IRouterMapProps, IRouterM
       <Route path="/chapter_2" exact component={React.lazy(() => import('./../Pages/chapter_2'))} />
       <Route path="/chapter_3" exact component={React.lazy(() => import('./../Pages/chapter_3'))} />
       <Route path="/chapter_4" exact component={React.lazy(() => import('./../Pages/chapter_4'))} />
+      <Route path="/chapter_5" exact component={React.lazy(() => import('./../Pages/chapter_5'))} />
     </Switch>
   }
 }
