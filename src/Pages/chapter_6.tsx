@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { WebGLRenderer, PerspectiveCamera, Scene, AxesHelper, BufferGeometry, BufferAttribute, MeshBasicMaterial, Mesh, SphereGeometry } from 'three';
+import { WebGLRenderer, PerspectiveCamera, Scene, AxesHelper, BufferGeometry, MeshBasicMaterial, Mesh, SphereGeometry } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Stats from 'stats.js';
 export interface IChapter6Props {

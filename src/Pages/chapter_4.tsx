@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { PerspectiveCamera, WebGLRenderer, AxesHelper, Scene, AmbientLight, Vector3, SkeletonHelper, DirectionalLight, Mesh, PlaneBufferGeometry, MeshPhongMaterial, AnimationMixer, Clock, GridHelper } from 'three';
+import { PerspectiveCamera, WebGLRenderer, AxesHelper, Scene, SkeletonHelper, DirectionalLight, Mesh, PlaneBufferGeometry, MeshPhongMaterial, AnimationMixer, Clock, GridHelper } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 export interface IChapter4Props {
 }

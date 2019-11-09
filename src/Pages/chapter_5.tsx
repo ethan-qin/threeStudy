@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Camera, WebGLRenderer, PerspectiveCamera, AxesHelper, Scene, SphereGeometry, MeshLambertMaterial, Mesh, AmbientLight, MeshPhongMaterial, MeshBasicMaterial, LineBasicMaterial, CircleGeometry, Geometry, Vector3, Line, LineLoop } from 'three';
+import {  WebGLRenderer, PerspectiveCamera, AxesHelper, Scene, AmbientLight, LineBasicMaterial, Geometry, Vector3, LineLoop } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export interface IChapter5Props {

@@ -33,7 +33,6 @@ export default class Chapter1 extends React.Component<IChapter1Props, IChapter1S
       let cube = new Mesh(cubeGeometry, material);
       cube.position.set(0, 35, 0);
       scene.add(cube);
-
       let controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
       let sphereGeometry = new SphereGeometry(7, 20, 20);

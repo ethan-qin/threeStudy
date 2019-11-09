@@ -66,6 +66,18 @@ export default class SideBar extends React.Component<ISideBarProps, ISideBarStat
             <span>窗帘</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="/chapter_9">
+          <NavLink to="/chapter_9">
+            <Icon type="upload" />
+            <span>ArrayCamera</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="/chapter_10">
+          <NavLink to="/chapter_10">
+            <Icon type="upload" />
+            <span>points</span>
+          </NavLink>
+        </Menu.Item>
       </Menu>
     );
   }

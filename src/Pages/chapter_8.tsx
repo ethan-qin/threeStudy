@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { WebGLRenderer, PerspectiveCamera, AxesHelper, Scene, Object3D, BoxBufferGeometry, BufferGeometry, BoxGeometry, MeshBasicMaterial, Color, MeshLambertMaterial, Mesh, CircleGeometry, SphereGeometry, Vector3, Fog, AmbientLight, DirectionalLight } from 'three';
-import Stats from 'stats.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { PerspectiveCamera, Scene, Color, Fog, AmbientLight, DirectionalLight } from 'three';
+
+
 export interface IChapter8Props {
 }
 
@@ -19,47 +19,39 @@ export default class Chapter8 extends React.Component<IChapter8Props, IChapter8S
     if (this.containerRef.current) {
       let width = this.containerRef.current.clientWidth;
       let height = this.containerRef.current.clientWidth;
-      let stats = new Stats();
-      this.containerRef.current.appendChild(stats.dom);
+
+      // scene
       let scene = new Scene();
-      let renderer = new WebGLRenderer({
-        antialias: true
-      });
-      renderer.shadowMap.enabled = true;
-      renderer.setSize(width, height);
-      let camera = new PerspectiveCamera(45, width / height, 0.1, 1000);
-      camera.position.set(10, 1, 3);
-      this.containerRef.current.appendChild(renderer.domElement);
-      let controls = new OrbitControls(camera, renderer.domElement);
-      controls.maxDistance = 1500;
-      controls.minDistance = 1;
-      controls.autoRotate = false;
-      let mesh = new Mesh(new BoxGeometry(1, 1), new MeshBasicMaterial({
-        color: new Color('blue'),
-        wireframe: true
-      }))
-      scene.add(mesh)
-      let axesHelper = new AxesHelper(100); 
-      scene.add(axesHelper);
-      scene.background = new Color(0xcceff);
+      scene.background = new Color(0xcce0ff);
       scene.fog = new Fog(0xcce0ff, 500, 10000);
+
+      // camera
+      let camera = new PerspectiveCamera(30, width / height, 1, 10000);
+      camera.position.set(1000, 50, 1500);
+
+      // light
       scene.add(new AmbientLight(0x666666));
-      let light = new DirectionalLight(0xfebff, 1);
+      let light = new DirectionalLight(0xdfebff, 1);
       light.position.set(50, 200, 100);
       light.position.multiplyScalar(1.3);
       light.castShadow = true;
-      light.shadow.camera.left = -300;
-      light.shadow.camera.right = 300;
-      light.shadow.camera.top = 300;
-      light.shadow.camera.bottom = -300;
-      let render = () => {
-        stats.begin();
-        // controls.update();
-        renderer.render(scene, camera);
-        stats.end();
-        requestAnimationFrame(render);
-      }
-      render();
+      let d = 300;
+      light.shadow.camera.left = -d;
+      light.shadow.camera.right = d;
+      light.shadow.camera.top = d;
+      light.shadow.camera.bottom = -d;
+      light.shadow.camera.far = 1000;
+      scene.add(light);
+
+      // cloth
+      // let loader = new TextureLoader();
+      // let clothTexture = loader.load('./images/circuit_pattern.png');
+      // clothTexture.anisotropy = 16;
+      // let clothMaterial = new MeshLambertMaterial({
+      //   map: clothTexture,
+      //   side: DoubleSide,
+      //   alphaTest: 0.5
+      // })
     }
   }
   private containerRef = React.createRef<HTMLDivElement>();
