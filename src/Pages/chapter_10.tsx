@@ -5,7 +5,7 @@ import { MMDLoader } from 'three/examples/jsm/loaders/MMDLoader';
 import { MMDAnimationHelper } from 'three/examples/jsm/animation/MMDAnimationHelper';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect';
 import { message } from 'antd';
-import { placeholder } from '@babel/types';
+import { GUI } from "dat.gui";
 let Ammo = require('ammo.js')
 export interface IChapter10Props {
 }
@@ -26,6 +26,7 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
       let width = this.containerRef.current.clientWidth;
       let height = this.containerRef.current.clientHeight;
       let camera = new PerspectiveCamera(45, width / height, 1, 2000);
+      let gui = new GUI();
       camera.position.z = 70;
       camera.position.y = 10;
       camera.lookAt(0, 40, 0)
@@ -71,15 +72,18 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
       renderer.setSize(width, height);
       let controls = new OrbitControls(camera, renderer.domElement);
       let effect = new OutlineEffect(renderer, {})
-      controls.maxDistance = 2000;
+      controls.maxDistance = 500;
       controls.autoRotate = false;
+      controls.maxPolarAngle = Math.PI / 2.01;
       let axesHelper = new AxesHelper(2000)
       // scene.add(axesHelper)
       this.containerRef.current.appendChild(renderer.domElement);
       let loader = new MMDLoader()
       let helper = new MMDAnimationHelper({
         afterglow: 2.0
-      })
+      });
+      let ikHelper: any;
+      let physicsHelper: any;
       var gridHelper = new PolarGridHelper(3000, 20, 80, 604, new Color('#fff'), new Color('#fff'));
       (gridHelper.material as any).opacity = 0.7;
       (gridHelper.material as any).transparent = true;
@@ -96,10 +100,10 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
       let directionalLight = new DirectionalLight(0x666666);
       directionalLight.position.set(0, 20, -20)
       directionalLight.castShadow = true;
-      directionalLight.shadow.camera.top = 20;
-      directionalLight.shadow.camera.bottom = -20;
-      directionalLight.shadow.camera.left = -20;
-      directionalLight.shadow.camera.right = 20;
+      directionalLight.shadow.camera.top = 40;
+      directionalLight.shadow.camera.bottom = -40;
+      directionalLight.shadow.camera.left = -40;
+      directionalLight.shadow.camera.right = 40;
       directionalLight.shadow.mapSize.width = 2048;
       directionalLight.shadow.mapSize.height = 2048;
       let ambientLight = new AmbientLight(0x666666);
@@ -119,9 +123,9 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
           animation: mmd.animation,
           physics: true
         })
-        let ikHelper = (helper as any).objects.get(dancer).ikSolver.createHelper();
+        ikHelper = (helper as any).objects.get(dancer).ikSolver.createHelper();
         ikHelper.visible = false;
-        let physicsHelper = (helper as any).objects.get(dancer).physics.createHelper();
+        physicsHelper = (helper as any).objects.get(dancer).physics.createHelper();
         physicsHelper.visible = false;
         scene.add(ikHelper)
         scene.add(physicsHelper)
@@ -132,8 +136,35 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
           meshPoneMaterial.needsUpdate = true;
           array.push(meshPoneMaterial)
         }
+        let dancers: any[] = [];
         dancer.material = array;
+        for (let index = 0; index < 5; index++) {
+          // let currentMesh = new Mesh(dancer.children[0])
+          // let current = dancer.clone();
+          // current.position.set(index * 10, 0, 0)
+          // scene.add(current); 
+        }
       });
+      let initGui = () => {
+        let api = {
+          'animation': true,
+          'gradient mapping': true,
+          'ik': true,
+          'outline': true,
+          'physics': true,
+          'ikHelper': false,
+          'physicsHelper': false
+        };
+        gui.add(api, 'animation').onChange(() => {
+          helper.enable('animation', api['animation'])
+        })
+        gui.add(api, 'ikHelper').onChange(() => {
+          ikHelper.visible = api['ikHelper'];
+        })
+        gui.add(api, 'physicsHelper').onChange(() => {
+          physicsHelper.visible = api[ 'physicsHelper' ];
+        })
+      }
       let render = () => {
         let time = Date.now() * 0.00005;
         controls.update();
@@ -141,9 +172,9 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
           let object = scene.children[i];
 
           if (object instanceof Points) {
-
-            object.rotation.y = time * (i < 4 ? i + 1 : - (i + 1));
-
+            object.rotation.y = time * (i < 4 ? i + 2 : - (i + 2));
+            object.rotation.x = time * (i < 4 ? i + 2 : - (i + 2));
+            object.rotation.z = time * (i < 4 ? i + 2 : - (i + 2));
           }
 
         }
@@ -160,6 +191,7 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
         effect.render(scene, camera);
         renderer.setAnimationLoop(render)
       }
+      initGui()
       render()
     }
   }
