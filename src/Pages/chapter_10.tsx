@@ -25,13 +25,35 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
     this.state = {
     }
   }
+  offsceneInit() {
+
+  }
   async componentDidMount() {
-    let workerer = new WebWorker(worker);
-    // workerer.on
+
+
+
+    // (workers as any).addEventListener('message', (event: any) => {
+    //   console.log(event);
+
+    // });
+
+    // (workers as any).postMessage('Fetch Users');
     (window as any).Ammo = Ammo;
     if (this.containerRef.current) {
       let width = this.containerRef.current.clientWidth;
       let height = this.containerRef.current.clientHeight;
+      let canvas = document.createElement('canvas')
+      if (canvas) {
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        if ('transferControlToOffscreen' in canvas) {
+          let offscreen = canvas.transferControlToOffscreen()
+          this.containerRef.current.appendChild(canvas);
+          let workers: any = WebWorker(worker,'./a');
+          (workers as Worker).postMessage({ drawingSurface: offscreen, width: width, height: height }, { transfer: [offscreen] });
+        }
+
+      }
       let camera = this.makeCamera(width, height);
       let scene = this.makeScene()
       const { points, materials } = this.makePoints();
@@ -226,7 +248,6 @@ export default class Chapter10 extends React.Component<IChapter10Props, IChapter
   public render() {
     return (
       <div ref={this.containerRef} style={{ width: '100%', height: '100%' }}>
-
       </div>
     );
   }
